@@ -23,7 +23,7 @@ Repository for CSCB Final Project, Group 6
 ## License
 This project is licensed under the MIT License, see the LICENSE file for more details.
 
-#Support
+## Support
 If you have any questions or concerns, you can open an issue or contact us at TBD
 
 
