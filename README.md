@@ -14,7 +14,7 @@ Repository for CSCB Final Project, Group 6
 ## Usage
 1. Import the package:
    from group6-cscb import TBD
-2. Use the package
+2. Use the package:
    result = TBD.TBD(arg1, arg2)
    print(result)
 
