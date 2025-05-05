@@ -52,7 +52,7 @@ from scipy.sparse import issparse
 
 
 ## Finding a Reference Cluster
-This function plots the average gene expression across genomic positions for each cell type. The layer parameter specifies which data layer (e.g., "counts") to use. The downsample parameter reduces the number of cells used for plotting (default is 100) to improve performance for large datasets. These plots help you visually identify which cell type has the lowest overall expression across the genome, which will serve as the reference cluster in later steps.
+This function plots the average gene expression across genomic positions for each cell type. These plots help you visually identify which cell type has the lowest overall expression across the genome, which will serve as the reference cluster in later steps.
 
 ```
 plot_cluster_means_by_genomic_position(adata, layer="counts", downsample=100)
@@ -67,12 +67,40 @@ After identifying the reference cluster, compute the smoothed expression profile
 smoothed, celltype_avg, global_avg, cluster_avg = compute_smoothed_profiles_from_adata(adata, ref="reference_cluster")
 ```
 
-Next, compute z-scores to measure deviations in expression for each cell relative to the smoothed reference profiles. This function calculates z-scores comparing each cell’s expression to the cell-type-specific average, the global average, and the reference cluster average. It stores the resulting z-score matrices in adata.obsm, such as `adata.obsm["delta_global_z"]`.
+Compute z-scores to measure deviations in expression for each cell relative to the smoothed reference profiles. It stores the resulting z-score matrices in adata.obsm, such as `adata.obsm["delta_global_z"]`.
 ```
 adata= compute_all_cell_zscores_to_adata_optimized(smoothed, celltype_avg, global_avg, cluster_avg, adata)
 ```
 
+Filter z-scores and count significant values. Will need to run function three times for each reference profile z score matrices.
+```
+filtered, up, down = filter_and_count_zscores(
+    adata.obsm["delta_global_z"],
+    upper_thresh=1.5,
+    lower_thresh=-1.5,
+    min_cells=600,
+    adata=adata,
+    obsm_key="filtered_global_z"
+)
 
+filtered, up, down = filter_and_count_zscores(
+    adata.obsm["delta_celltype_z"],
+    upper_thresh=1.5,
+    lower_thresh=-1.5,
+    min_cells=600,
+    adata=adata,
+    obsm_key="filtered_celltype_z"
+)
+
+filtered, up, down = filter_and_count_zscores(
+    adata.obsm["delta_cluster_z"],
+    upper_thresh=1.5,
+    lower_thresh=-1.5,
+    min_cells=600,
+    adata=adata,
+    obsm_key="filtered_cluster_z"
+)
+```
 
 
 
