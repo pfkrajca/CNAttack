@@ -2,7 +2,7 @@
 Repository for CSCB Final Project, Group 6
 
 ## Description
-___ is a computational tool to identify CNVs. 
+___ is a computational tool to identify CNVs. This tool allows users to decide on the reference used, including global, cell type, or a reference cluster.
 
 ## Installation
 1. Clone the respository:
@@ -105,7 +105,7 @@ filtered, up, down = filter_and_count_zscores(
 
 ## HMM-Based CNV Detection
 
-Infer CNVs using Hidden Markov Model. This function trains an HMM on the filtered z-score matrix ("filtered_cluster_z") and classifies genomic regions into one of three states: 0 for loss, 1 for neutral, and 2 for gain. You can adjust n_iter for more iterations, or chunk_size for memory-efficient processing. The inferred CNV states are stored in adata.var with column names prefixed by output_prefix ("hmm_cnv_state").
+Infer CNVs using Hidden Markov Model. This function trains an HMM on the filtered z-score matrix ("filtered_cluster_z") and classifies genomic regions into one of three states: 0 for loss, 1 for neutral, and 2 for gain. You can adjust n_iter for more iterations, or chunk_size for memory-efficient processing. The inferred CNV states are stored in adata.var with column names prefixed by output_prefix ("hmm_cnv_state").  
 
 ```
 adata = detect_cnvs_with_hmm_final(adata, matrix_name="filtered_cluster_z", n_components=3,
