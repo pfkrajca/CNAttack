@@ -105,7 +105,7 @@ filtered, up, down = filter_and_count_zscores(
 
 ## HMM-Based CNV Detection
 
-Infer CNVs using Hidden Markov Model. This function trains an HMM on the filtered z-score matrix ("filtered_global_z") and classifies genomic regions into one of three states: 0 for loss, 1 for neutral, and 2 for gain. You can adjust n_iter for more iterations, or chunk_size for memory-efficient processing. The inferred CNV states are stored in adata.var with column names prefixed by output_prefix ("hmm_cnv_state").
+Infer CNVs using Hidden Markov Model. This function trains an HMM on the filtered z-score matrix ("filtered_cluster_z") and classifies genomic regions into one of three states: 0 for loss, 1 for neutral, and 2 for gain. You can adjust n_iter for more iterations, or chunk_size for memory-efficient processing. The inferred CNV states are stored in adata.var with column names prefixed by output_prefix ("hmm_cnv_state").
 
 ```
 adata = detect_cnvs_with_hmm_final(adata, matrix_name="filtered_cluster_z", n_components=3,
@@ -120,6 +120,7 @@ Format the results. Function merges neighboring CNVs based on genomic proximity 
 adata, cnv_stats = format_detected_cnvs_with_cell_counts(
     adata,
     state_col='hmm_cnv_state',
+    output_col='detected_cnvs',
     max_gap=500000,
     min_region_size=5000,
     z_threshold=1.5
