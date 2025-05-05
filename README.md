@@ -37,6 +37,21 @@ Before running the package ensure your adata object contains:
 
 ## Finding a Reference Cluster
 
+Import the required packages.
+`import os, sys
+os.environ['R_HOME'] = sys.exec_prefix+"/lib/R/"
+import scanpy as sc
+import scFates as scf
+import numpy as np
+import pandas as pd
+from anndata import AnnData
+from typing import Dict, Tuple
+from hmmlearn import hmm
+from sklearn.preprocessing import StandardScaler
+from tqdm import tqdm
+import warnings
+import matplotlib.pyplot as plt
+from scipy.sparse import issparse`
 
 ## Gene Expression Smoothing
 
