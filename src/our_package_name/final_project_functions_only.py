@@ -111,6 +111,7 @@ def plot_cluster_means_by_genomic_position(adata, layer="counts", downsample=100
 """#**Smoothing (2)**"""
 
 def order_genes_by_position(adata: AnnData) -> AnnData:
+    # internal helper
     """
     Orders the variables (genes) in the AnnData object by chromosome and start.
     """
@@ -123,6 +124,7 @@ def order_genes_by_position(adata: AnnData) -> AnnData:
 
 
 def smooth_expression_matrix(matrix: pd.DataFrame, window_size: int = 25) -> pd.DataFrame:
+    # internal helper
     """
     Applies a sliding window average across genes.
     """
@@ -144,6 +146,7 @@ def compute_smoothed_profiles_from_adata(
     window_size: int = 25,
     ref: str = 'Monocyte'
 ) -> Tuple[pd.DataFrame, Dict[str, pd.Series], pd.Series, pd.Series]:
+    # public function that helps users
     """
     Computes smoothed expression profiles from an AnnData object.
     Returns:
