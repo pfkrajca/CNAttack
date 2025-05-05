@@ -18,6 +18,31 @@ Repository for CSCB Final Project, Group 6
    result = TBD.TBD(arg1, arg2)
    print(result)
 
+Before running the package ensure your adata object contains:
+
+  `adata.var` with the following columns:
+
+  *  `"gene_name"`
+
+  *  `"chromosome"`
+
+  *  `"start"`
+
+  *  `"end"`
+
+  `adata.obs` with a `"cell_type"` column.
+
+
+
+
+## Finding a Reference Cluster
+
+
+## Gene Expression Smoothing
+
+## HMM-Based CNV Detection
+
+
 ## Examples
 
 ## License
