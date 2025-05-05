@@ -21,7 +21,7 @@ ___ is a computational tool to identify CNVs.
 
 ## Setup
 
-Load data.
+Load the data.
 ```
 adata = sc.read_h5ad("PBMC_simulated_cnas_041025.h5ad")
 ```
@@ -52,7 +52,7 @@ from scipy.sparse import issparse
 
 
 ## Finding a Reference Cluster
-This function plots the average gene expression across genomic positions for each cell type. These plots help you visually identify which cell type has the lowest overall expression across the genome, which will serve as the reference cluster in later steps.
+This function plots the average gene expression across genomic positions for each cell type. These plots will help you visually identify which cell type has the lowest overall expression across the genome, which will serve as the reference cluster in later steps.
 
 ```
 plot_cluster_means_by_genomic_position(adata, layer="counts", downsample=100)
@@ -103,19 +103,32 @@ filtered, up, down = filter_and_count_zscores(
 ```
 
 
-
 ## HMM-Based CNV Detection
 
+Infer CNVs using Hidden Markov Model. This function trains an HMM on the filtered z-score matrix ("filtered_global_z") and classifies genomic regions into one of three states: 0 for loss, 1 for neutral, and 2 for gain. You can adjust n_iter for more iterations, or chunk_size for memory-efficient processing. The inferred CNV states are stored in adata.var with column names prefixed by output_prefix ("hmm_cnv_state").
+
+```
+adata = detect_cnvs_with_hmm_final(adata, matrix_name="filtered_cluster_z", n_components=3,
+                             n_iter=50, random_state=42, output_prefix="hmm_cnv",
+                             min_non_nan=20, chunk_size=100
+)
+```
+
+Format the results. Function merges neighboring CNVs based on genomic proximity and filters them by size and z-score deviation. It returns a summary of CNV regions including genomic coordinates, affected genes, and cell counts. The CNV region metadata is saved in `adata.obs["detected_cnvs"]`
+
+```
+adata, cnv_stats = format_detected_cnvs_with_cell_counts(
+    adata,
+    state_col='hmm_cnv_state',
+    max_gap=500000,
+    min_region_size=5000,
+    z_threshold=1.5
+)
 
 
+print("\nCNV distribution across cells:")
+print(adata.obs['detected_cnvs'].value_counts().head())
+```
 
-
-## Examples
-
-## License
-This project is licensed under the MIT License, see the LICENSE file for more details.
-
-## Support
-If you have any questions or concerns, you can open an issue or contact us at TBD
 
 
