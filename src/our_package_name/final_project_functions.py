@@ -400,51 +400,65 @@ def detect_cnvs_with_hmm_final(adata, matrix_name="filtered_z", n_components=3,
     print("Stored HMM states and posteriors in adata.var")
     return adata
 
-def format_detected_cnvs_with_cell_counts(adata, state_col='hmm_cnv_state', output_col='detected_cnvs',
-                                         chrom_col='chromosome', start_col='start', end_col='end',
-                                         max_gap=1e6, min_region_size=1000, z_threshold=1.5):
+def format_detected_cnvs_with_cell_counts(
+    adata,
+    state_col='hmm_cnv_state',
+    output_col='detected_cnvs',
+    chrom_col='chromosome',
+    start_col='start',
+    end_col='end',
+    cell_type_col='cell_type',
+    max_gap=1e6,
+    min_region_size=1000,
+    z_threshold=1.5
+):
     """
-    Enhanced version that:
-    1. Merges overlapping CNV regions
-    2. Counts how many cells contain each CNV pattern
-    3. Stores both region counts and cell counts
+    Formats detected CNVs:
+    - Excludes neutral regions
+    - Merges overlapping CNVs
+    - Counts affected cells per region and cell type
+    - Annotates CNV type (gain/loss)
     """
+
     import pandas as pd
     import numpy as np
     from scipy.stats import zscore
+    import warnings
 
-    # Custom mapping based on your state distribution
-    state_to_cn = {
-        -1: None,  # Will be filtered out
-        0: '0',    # Deletion
-        1: '2',    # Neutral
-        2: '4'     # Amplification
-    }
-
-    # Filter out invalid features first
-    valid_features = adata.var[state_col] >= 0  # Only keep states 0,1,2
+    # Only consider CNV states (not neutral)
+    valid_states = [0, 2]
+    valid_features = adata.var[state_col].isin(valid_states)
     sorted_vars = adata.var[valid_features].sort_values([chrom_col, start_col])
 
     if len(sorted_vars) == 0:
-        print("No valid CNV regions found!")
+        print("No CNV regions found!")
         adata.obs[output_col] = "neutral"
         return adata, pd.DataFrame()
 
-    # Convert to list of regions for easier processing
+    # Map state to CN type
+    state_to_cn = {
+        0: '0',   # Deletion
+        2: '4'    # Amplification
+    }
+    cn_to_type = {
+        '0': 'loss',
+        '4': 'gain'
+    }
+
+    # Build regions list
     regions = []
     for _, row in sorted_vars.iterrows():
         cn = state_to_cn[row[state_col]]
-        if cn is None:
-            continue
         regions.append({
             'chrom': row[chrom_col],
             'start': float(row[start_col]),
             'end': float(row[end_col]),
             'cn': cn,
-            'genes': [row.name]  # Track which genes are in this region
+            'cnv_type': cn_to_type[cn],
+            'genes': [row.name]
         })
 
-    # Merge overlapping regions (overlapping genomic regions are counted as one CNV)
+    # Merge overlapping CNVs
     merged = []
     current = None
 
@@ -453,89 +467,93 @@ def format_detected_cnvs_with_cell_counts(adata, state_col='hmm_cnv_state', outp
             current = region.copy()
             continue
 
-        # Same chromosome and CN state, and either overlapping or within max_gap
-        if (region['chrom'] == current['chrom'] and
-            region['cn'] == current['cn'] and
-            region['start'] <= current['end'] + max_gap):
-
-            # Merge the regions
+        if (
+            region['chrom'] == current['chrom']
+            and region['cn'] == current['cn']
+            and region['start'] <= current['end'] + max_gap
+        ):
             current['end'] = max(current['end'], region['end'])
             current['genes'].extend(region['genes'])
         else:
-            # Save current region if large enough
             if current['end'] - current['start'] >= min_region_size:
                 merged.append(current)
-            # Start new region
             current = region.copy()
 
-    # Add the last region if valid
     if current and current['end'] - current['start'] >= min_region_size:
         merged.append(current)
 
     if not merged:
-        print("No valid CNV regions after merging!")
+        print("No valid CNV regions after merging.")
         adata.obs[output_col] = "neutral"
         return adata, pd.DataFrame()
 
-    # Create formatted strings and count cells
+    # Create CNV matrix and collect stats
     results = []
     cell_cnv_matrix = np.zeros((adata.n_obs, len(merged)), dtype=bool)
 
     for i, region in enumerate(merged):
-        # Get expression for genes in this region
         expr = adata[:, region['genes']].X
         if hasattr(expr, 'toarray'):
             expr = expr.toarray()
 
-        # Calculate z-scores for this region across cells
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             z_scores = zscore(expr, axis=0, nan_policy='omit')
             region_z = np.nanmean(z_scores, axis=1)
 
-        # Determine which cells have this CNV
-        if region['cn'] == '0':  # Deletion
+        # Determine affected cells
+        if region['cn'] == '0':
             cnv_cells = region_z < -z_threshold
-        elif region['cn'] == '4':  # Amplification
+        elif region['cn'] == '4':
             cnv_cells = region_z > z_threshold
         else:
             cnv_cells = np.zeros(adata.n_obs, dtype=bool)
 
         cell_cnv_matrix[:, i] = cnv_cells
-
-        # Format region string
-        region_str = f"{region['chrom']}:{int(region['start'])}-{int(region['end'])} (CN {region['cn']})"
         n_cells = np.sum(cnv_cells)
+
+        # Count by cell type
+        if cell_type_col in adata.obs.columns:
+            cell_types = adata.obs.loc[cnv_cells, cell_type_col]
+            cell_type_counts = cell_types.value_counts().to_dict()
+        else:
+            cell_type_counts = {}
+
+        region_str = f"{region['chrom']}:{int(region['start'])}-{int(region['end'])} (CN {region['cn']})"
 
         results.append({
             'region': region_str,
             'n_cells': n_cells,
-            'genes': ','.join(region['genes'])
+            'genes': ','.join(region['genes']),
+            'cnv_type': region['cnv_type'],
+            'cell_type_counts': cell_type_counts
         })
 
-    # Create DataFrame with region counts and cell counts
+    # Final DataFrame
     cnv_df = pd.DataFrame(results).sort_values('n_cells', ascending=False)
     cnv_df['percent_cells'] = (cnv_df['n_cells'] / adata.n_obs * 100).round(1)
 
-    # Assign CNV patterns to cells
+    # Assign CNVs to cells
     adata.obs[output_col] = "neutral"
     for i in range(len(merged)):
         region_str = cnv_df.iloc[i]['region']
         adata.obs.loc[cell_cnv_matrix[:, i], output_col] = region_str
 
-    # For cells with multiple CNVs, concatenate patterns
+    # Handle multiple CNVs per cell
     multi_cnv_cells = np.sum(cell_cnv_matrix, axis=1) > 1
     if np.any(multi_cnv_cells):
         for cell_idx in np.where(multi_cnv_cells)[0]:
-            patterns = [cnv_df.iloc[i]['region']
-                       for i in np.where(cell_cnv_matrix[cell_idx])[0]]
+            patterns = [
+                cnv_df.iloc[i]['region']
+                for i in np.where(cell_cnv_matrix[cell_idx])[0]
+            ]
             adata.obs.iloc[cell_idx, adata.obs.columns.get_loc(output_col)] = "; ".join(patterns)
 
-    print(f"Detected {len(merged)} merged CNV regions across {np.sum(cell_cnv_matrix)} cell-region pairs")
+    print(f"Detected {len(merged)} CNV regions across {np.sum(cell_cnv_matrix)} cell-region pairs")
     print("\nTop CNV regions by cell count:")
     print(cnv_df.head())
 
-    # Store additional information
+    # Store extra info
     adata.uns['cnv_stats'] = {
         'total_regions': len(merged),
         'total_cell_cnv_pairs': np.sum(cell_cnv_matrix),
