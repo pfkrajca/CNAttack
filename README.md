@@ -2,7 +2,7 @@
 Repository for CSCB Final Project, Group 6
 
 ## Description
-___ is a computational tool to identify CNVs. This tool allows users to decide on the reference used, including global, cell type, or a reference cluster.
+CNAttack is a computational tool to identify CNVs. This tool allows users to decide on the reference used, including global, cell type, or a reference cluster.
 
 ## Installation
 1. Clone the respository:
