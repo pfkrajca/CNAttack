@@ -1,4 +1,4 @@
-# group6-cscb
+# CNAttack
 Repository for CSCB Final Project, Group 6
 
 ## Description
@@ -6,15 +6,15 @@ ___ is a computational tool to identify CNVs. This tool allows users to decide o
 
 ## Installation
 1. Clone the respository:
-  git clone https://github.com/pfkrajca/group6-cscb.git
+  git clone https://github.com/pfkrajca/CNAttack.git
 3. Navigate to the project directory:
-   cd group6-cscb
+   cd CNAttack
 5. Install dependencies:
    pip install TBD
 
 ## Usage
 1. Import the package:
-   from group6-cscb import TBD
+   from CNAttack import TBD
 2. Use the package:
    result = TBD.TBD(arg1, arg2)
    print(result)
