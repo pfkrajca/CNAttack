@@ -2,12 +2,13 @@
 Repository for CSCB Final Project, Group 6
 
 ## Description
-CNAttack is a computational tool to identify CNVs. This tools is a CNA detection choose your own adventure that allows users to cutomize the package as follows. 
+CNAttack is a computational tool to identify CNVs. This package is a CNA detection choose your own adventure that allows users to cutomize the package as follows: 
 
 Choose your own clustering variable
 * Cell Type
 * Time point
 * Conditioned group
+  
 Choose your own expression average
 * Cluster specific
 * Reference specific
