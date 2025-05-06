@@ -2,7 +2,17 @@
 Repository for CSCB Final Project, Group 6
 
 ## Description
-CNAttack is a computational tool to identify CNVs. This tool allows users to decide on the reference used, including global, cell type, or a reference cluster.
+CNAttack is a computational tool to identify CNVs. This tools is a CNA detection choose your own adventure that allows users to cutomize the package as follows. 
+
+Choose your own clustering variable
+* Cell Type
+* Time point
+* Conditioned group
+Choose your own expression average
+* Cluster specific
+* Reference specific
+* Global
+
 
 ## Installation
 1. Clone the respository:
