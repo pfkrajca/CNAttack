@@ -15,18 +15,23 @@ Choose your own expression average
 * Global
 
 
-## Installation
+## Installation & Usage
 1. Clone the respository:
   git clone https://github.com/pfkrajca/CNAttack.git
 3. Navigate to the project directory:
    cd CNAttack
 5. Install dependencies:
-   pip install TBD
+   pip install TBD see requirements.txt
 
-## Usage
 1. Import the package:
-   from CNAttack import TBD
-2. Use the package:
+   from CNAttack import filter_zscores
+   from CNAttack import format_CNVs
+   from CNAttack import hmm_for_CNAs
+   from CNAttack import plot_cluster
+   from CNAttack import smooth_profiles
+   from CNAttack import zscores_compute
+
+3. Use the package:
    result = TBD.TBD(arg1, arg2)
    print(result)
 
