@@ -1,21 +1,15 @@
 #!/usr/bin/env python
 """
-CNAttack - Complete Copy Number Variation Analysis Workflow
+CNAttack - A CNA detection choose your own adventure!
 
-This example script demonstrates the full CNAttack workflow for detecting
-copy number variations (CNVs) from single-cell RNA-seq data.
+This example script demonstrates the full CNAttack workflow.
 
 Usage:
     python example_CNAttack.py input.h5ad --output output_prefix [options]
 
 Author: Peyton Krajcarski
 """
-
-import os
-import argparse
-import scanpy as sc
-import matplotlib.pyplot as plt
-from tqdm import tqdm
+pip install -r requirements.txt
 
 # Import CNAttack modules
 from CNAttack.plot_cluster import plot_cluster_means_by_genomic_position
