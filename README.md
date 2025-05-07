@@ -43,6 +43,8 @@ Choose your own expression average
     
 ## Setup & Usage
 
+A usage example of CNAttack for command-line interfaces is provided. The below instructions are more attuned to Google Colab users.
+
 Load the data.
 ```
 adata = sc.read_h5ad("PBMC_simulated_cnas_041025.h5ad")
