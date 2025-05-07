@@ -15,7 +15,7 @@ Choose your own expression average
 * Global
 
 
-## Installation & Usage
+## Installation
 1. Clone the respository:
   git clone https://github.com/pfkrajca/CNAttack.git
 3. Navigate to the project directory:
@@ -31,11 +31,7 @@ Choose your own expression average
    from CNAttack import smooth_profiles
    from CNAttack import zscores_compute
 
-3. Use the package:
-   result = TBD.TBD(arg1, arg2)
-   print(result)
-
-## Setup
+## Setup & Usage
 
 Load the data.
 ```
