@@ -532,7 +532,7 @@ def format_detected_cnvs_with_cell_counts(
 
     print(f"Detected {len(merged)} CNV regions across {np.sum(cell_cnv_matrix)} cell-region pairs")
     print("\nTop CNV regions by cell count:")
-    print(cnv_df.head())
+    print(cnv_df)
 
     # Store extra info
     adata.uns['cnv_stats'] = {
