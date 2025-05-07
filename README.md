@@ -49,7 +49,7 @@ Choose your own expression average
     
 ## Setup & Usage
 
-A usage example of CNAttack for command-line interfaces is provided. The below instructions are more attuned to Google Colab users.
+A usage example of CNAttack for command-line interfaces is provided in example_CNA.py. Please note that we generated and tested our code in Google Colab, therefore, there may be some differences in the conversion of our package from Google Colab to Argparse formatting for use in the command line. The below instructions are more attuned to Google Colab users.
 
 Load the data.
 ```
