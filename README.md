@@ -21,14 +21,20 @@ Choose your own expression average
 3. Navigate to the project directory:
    cd CNAttack
 5. Install dependencies:
-   pip install TBD see requirements.txt
+   pip install -r requirements.txt
 
 1. Import the package:
+
    from CNAttack import filter_zscores
+   
    from CNAttack import format_CNVs
+   
    from CNAttack import hmm_for_CNAs
+   
    from CNAttack import plot_cluster
+   
    from CNAttack import smooth_profiles
+   
    from CNAttack import zscores_compute
 
 ## Setup & Usage
