@@ -214,11 +214,11 @@ def compute_smoothed_profiles_from_adata(
 
     # Step 6: Reference cluster average
     if ref in celltype_profiles:
-        ref_avg = celltype_profiles[ref]
+        cluster_avg = celltype_profiles[ref]
     else:
         raise ValueError(f"Reference cell type '{ref}' not found in adata.obs['{group_by}'].")
 
-    return smoothed_expr, celltype_profiles, global_avg, ref_avg
+    return smoothed_expr, celltype_profiles, global_avg, cluster_avg
 
 # Perform smothing with comput_smoothed_profiles_from_adata (other 2 functions are already called within this function)
 smoothed, celltype_avg, global_avg, cluster_avg = compute_smoothed_profiles_from_adata(adata, group_by = "cell_type", ref = "B cell")
