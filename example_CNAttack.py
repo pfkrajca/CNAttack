@@ -112,7 +112,7 @@ def main():
     
     # Execute workflow steps
     if 1 >= args.start_step and 1 <= args.end_step:
-        print(f"\n🔹 STEP 1: Plotting mean expression across genomic positions")
+        print(f"\n STEP 1: Plotting mean expression across genomic positions")
         if args.plot:
             print(f"Generating genomic position plots...")
             plot_cluster_means_by_genomic_position(
@@ -126,7 +126,7 @@ def main():
             print(f"Skipping plot generation (use --plot to enable)")
     
     if 2 >= args.start_step and 2 <= args.end_step:
-        print(f"\n🔹 STEP 2: Computing smoothed expression profiles")
+        print(f"\n STEP 2: Computing smoothed expression profiles")
         print(f"Window size: {args.window_size}, Reference group: {args.ref_group}")
         smoothed_expr, celltype_profiles, global_avg, ref_avg = compute_smoothed_profiles_from_adata(
             adata,
@@ -143,7 +143,7 @@ def main():
         print(f"Saved to {smoothed_file}")
     
     if 3 >= args.start_step and 3 <= args.end_step:
-        print(f"\n🔹 STEP 3: Computing z-scores")
+        print(f"\n STEP 3: Computing z-scores")
         # Load data if starting from this step
         if args.start_step > 2:
             print(f"Loading from {smoothed_file}...")
@@ -181,7 +181,7 @@ def main():
         print(f"Saved to {zscores_file}")
     
     if 4 >= args.start_step and 4 <= args.end_step:
-        print(f"\n🔹 STEP 4: Filtering z-scores")
+        print(f"\n STEP 4: Filtering z-scores")
         # Load data if starting from this step
         if args.start_step > 3:
             print(f"Loading from {zscores_file}...")
@@ -201,7 +201,7 @@ def main():
         print(f"Saved to {filtered_file}")
     
     if 5 >= args.start_step and 5 <= args.end_step:
-        print(f"\n🔹 STEP 5: Detecting CNVs using HMM")
+        print(f"\n STEP 5: Detecting CNVs using HMM")
         # Load data if starting from this step
         if args.start_step > 4:
             print(f"Loading from {filtered_file}...")
@@ -223,7 +223,7 @@ def main():
         print(f"Saved to {hmm_file}")
     
     if 6 >= args.start_step and 6 <= args.end_step:
-        print(f"\n🔹 STEP 6: Formatting and annotating CNVs")
+        print(f"\n STEP 6: Formatting and annotating CNVs")
         # Load data if starting from this step
         if args.start_step > 5:
             print(f"Loading from {hmm_file}...")
