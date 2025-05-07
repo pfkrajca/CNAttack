@@ -39,6 +39,12 @@ Choose your own expression average
     from CNAttack import plot_cluster
     from CNAttack import smooth_profiles
     from CNAttack import zscores_compute
+    from CNAttack.plot_cluster import plot_cluster_means_by_genomic_position
+    from CNAttack.smooth_profiles import compute_smoothed_profiles_from_adata
+    from CNAttack.zscores_compute import compute_all_cell_zscores_to_adata_optimized
+    from CNAttack.filter_zscores import filter_and_count_zscores
+    from CNAttack.hmm_for_CNAs import detect_cnvs_with_hmm_final
+    from CNAttack.format_CNVs import format_detected_cnvs_with_cell_counts
     ```
     
 ## Setup & Usage
