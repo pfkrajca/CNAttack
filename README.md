@@ -179,7 +179,7 @@ The simplest way to run the complete workflow is using the example script:
 ```bash
 python example_CNAttack.py input.h5ad --output results/my_analysis
 ```
-
+The unput .h5ad file should be the PBMC simulated data set provided. This can be found ___. 
 This way, the same annData file will be use throughout the whole process to ensure clean detection of CNAs.
 
 ## Required Data Format
