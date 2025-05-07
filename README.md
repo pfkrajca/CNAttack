@@ -22,6 +22,8 @@ General CNAttack Pipeline
 5. **HMM detection**: Use Hidden Markov Models to identify CNV patterns
 6. **Annotation**: Format, merge, and annotate detected CNVs
 
+## Example Data Sets
+Sample scRNA-seq data sets used in this repository can be found at this public Google Drive link: https://drive.google.com/drive/folders/198Vcme8ewUsUOdKq9GVszRskIuurNxQT?usp=sharing 
 
 ## Installation
 
