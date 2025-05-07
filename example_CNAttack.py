@@ -21,35 +21,35 @@ from CNAttack.format_CNVs import format_detected_cnvs_with_cell_counts
 
 
 def main():
-    # Parse command line arguments
+    #Parse command line arguments
     parser = argparse.ArgumentParser(
         description="CNAttack - Complete Copy Number Variation Analysis from scRNA-seq data",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     
-    # Required arguments
+    #Required arguments
     parser.add_argument("input_file", type=str, help="Path to the AnnData (.h5ad) file")
     parser.add_argument("--output", type=str, default="cnattack_output", 
                         help="Output prefix for results")
     
-    # Data parameters
+    #Data parameters
     parser.add_argument("--layer", type=str, default=None, 
                         help="Layer in AnnData to use (e.g., 'counts', 'normalized')")
     parser.add_argument("--group_by", type=str, default="cell_type", 
                         help="Column in obs to group cells by")
     
-    # Step 1: Plotting options
+    #Plotting options
     parser.add_argument("--plot", action="store_true", help="Generate genomic position plots")
     parser.add_argument("--downsample", type=int, default=100, 
                         help="Downsample factor for plotting")
     
-    # Step 2: Smoothing options
+    #Smoothing options
     parser.add_argument("--window_size", type=int, default=25, 
                         help="Window size for smoothing gene expression")
     parser.add_argument("--ref_group", type=str, default="Monocyte", 
                         help="Reference cell type/group for comparisons")
     
-    # Step 4: Z-score filtering options
+    #Z-score filtering options
     parser.add_argument("--upper_thresh", type=float, default=1.0, 
                         help="Upper z-score threshold")
     parser.add_argument("--lower_thresh", type=float, default=-1.0, 
@@ -57,7 +57,7 @@ def main():
     parser.add_argument("--min_cells", type=int, default=600, 
                         help="Minimum cells with significant change")
     
-    # Step 5: HMM options
+    #HMM options
     parser.add_argument("--n_components", type=int, default=3, 
                         help="Number of hidden states for HMM")
     parser.add_argument("--n_iter", type=int, default=50, 
@@ -67,7 +67,7 @@ def main():
     parser.add_argument("--chunk_size", type=int, default=100, 
                         help="Chunk size for processing features in HMM")
     
-    # Step 6: CNV formatting options
+    #CNV formatting options
     parser.add_argument("--max_gap", type=float, default=1e6, 
                         help="Maximum gap for merging overlapping CNVs")
     parser.add_argument("--min_region_size", type=int, default=1000, 
@@ -75,7 +75,7 @@ def main():
     parser.add_argument("--z_threshold", type=float, default=1.5, 
                         help="Z-score threshold for determining affected cells")
     
-    # Workflow control
+    #Workflow control
     parser.add_argument("--start_step", type=int, default=1, choices=range(1, 7),
                         help="Start workflow from step (1-6)")
     parser.add_argument("--end_step", type=int, default=6, choices=range(1, 7),
@@ -83,30 +83,28 @@ def main():
     
     args = parser.parse_args()
     
-    # Create output directory if it doesn't exist
+    #Create output directory if it doesn't exist
     os.makedirs(os.path.dirname(args.output) if os.path.dirname(args.output) else '.', exist_ok=True)
     
-    # Define intermediate file paths
+    #Define intermediate file paths [checks work]
     smoothed_file = f"{args.output}_smoothed.h5ad"
     zscores_file = f"{args.output}_zscores.h5ad"
     filtered_file = f"{args.output}_filtered.h5ad"
     hmm_file = f"{args.output}_hmm.h5ad"
     cnv_file = f"{args.output}_cnvs.h5ad"
     
-    print(f"⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯")
-    print(f"CNAttack Workflow - Copy Number Variation Analysis")
+    print(f"CNAttack - A CNA detection choose your own adventure!")
     print(f"Input: {args.input_file}")
     print(f"Output prefix: {args.output}")
-    print(f"⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯")
     
-    # Load input data
+    #Load input data
     print(f"\nLoading input data from {args.input_file}...")
     adata = sc.read_h5ad(args.input_file)
     print(f"Data loaded: {adata.shape[0]} cells × {adata.shape[1]} genes")
     
-    # Execute workflow steps
+    #Execute workflow steps
     if 1 >= args.start_step and 1 <= args.end_step:
-        print(f"\n STEP 1: Plotting mean expression across genomic positions")
+        print(f"\n Plotting mean expression across genomic positions")
         if args.plot:
             print(f"Generating genomic position plots...")
             plot_cluster_means_by_genomic_position(
@@ -120,7 +118,7 @@ def main():
             print(f"Skipping plot generation (use --plot to enable)")
     
     if 2 >= args.start_step and 2 <= args.end_step:
-        print(f"\n STEP 2: Computing smoothed expression profiles")
+        print(f"\n Computing smoothed expression profiles")
         print(f"Window size: {args.window_size}, Reference group: {args.ref_group}")
         smoothed_expr, celltype_profiles, global_avg, ref_avg = compute_smoothed_profiles_from_adata(
             adata,
@@ -137,7 +135,7 @@ def main():
         print(f"Saved to {smoothed_file}")
     
     if 3 >= args.start_step and 3 <= args.end_step:
-        print(f"\n STEP 3: Computing z-scores")
+        print(f"\n Computing z-scores")
         # Load data if starting from this step
         if args.start_step > 2:
             print(f"Loading from {smoothed_file}...")
@@ -175,7 +173,7 @@ def main():
         print(f"Saved to {zscores_file}")
     
     if 4 >= args.start_step and 4 <= args.end_step:
-        print(f"\n STEP 4: Filtering z-scores")
+        print(f"\n Filtering z-scores")
         # Load data if starting from this step
         if args.start_step > 3:
             print(f"Loading from {zscores_file}...")
@@ -195,7 +193,7 @@ def main():
         print(f"Saved to {filtered_file}")
     
     if 5 >= args.start_step and 5 <= args.end_step:
-        print(f"\n STEP 5: Detecting CNVs using HMM")
+        print(f"\n Detecting CNVs using HMM")
         # Load data if starting from this step
         if args.start_step > 4:
             print(f"Loading from {filtered_file}...")
@@ -217,7 +215,7 @@ def main():
         print(f"Saved to {hmm_file}")
     
     if 6 >= args.start_step and 6 <= args.end_step:
-        print(f"\n STEP 6: Formatting and annotating CNVs")
+        print(f"\n Formatting and annotating CNVs")
         # Load data if starting from this step
         if args.start_step > 5:
             print(f"Loading from {hmm_file}...")
@@ -245,10 +243,8 @@ def main():
         print(f"Full AnnData saved to: {cnv_file}")
         print(f"CNV regions saved to: {cnv_csv_file}")
     
-    print(f"\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯")
-    print(f"CNAttack workflow complete!")
+    print(f"Congratulations on choosing your own CNA detection adventure with CNAttack!")
     print(f"Final output file: {cnv_file}")
-    print(f"⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯")
 
 
 if __name__ == "__main__":
