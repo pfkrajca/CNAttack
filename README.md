@@ -26,18 +26,12 @@ Choose your own expression average
     cd CNAttack
     ```
 
-3. **Create and activate a virtual environment** (optional but recommended):
-    ```bash
-    python3 -m venv cna_env
-    source cna_env/bin/activate  # On Windows use `cna_env\Scripts\activate`
-    ```
-
-4. **Install dependencies**:
+3. **Install dependencies**:
     ```bash
     pip install -r requirements.txt
     ```
 
-5. **Import the package in your Python code**:
+4. **Import the package in your Python code**:
     ```python
     from CNAttack import filter_zscores
     from CNAttack import format_CNVs
@@ -46,15 +40,7 @@ Choose your own expression average
     from CNAttack import smooth_profiles
     from CNAttack import zscores_compute
     ```
-
-6. **Usage Example** (optional):
-    ```python
-    # Example of using the functions
-    filtered_zscores = filter_zscores(data)
-    formatted_CNVs = format_CNVs(cnv_data)
-    # etc.
-    ```
-
+    
 ## Setup & Usage
 
 Load the data.
