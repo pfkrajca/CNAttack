@@ -46,11 +46,13 @@ Before running the package ensure your adata object contains:
 
 Import the required packages.
 ```
-import os, sys
-import scanpy as sc
-import scFates as scf
+import os
+import sys
+import argparse
 import numpy as np
 import pandas as pd
+import scanpy as sc
+import scFates as scf
 from anndata import AnnData
 from typing import Dict, Tuple
 from hmmlearn import hmm
@@ -59,6 +61,7 @@ from tqdm import tqdm
 import warnings
 import matplotlib.pyplot as plt
 from scipy.sparse import issparse
+from scipy.stats import zscore
 ```
 
 
