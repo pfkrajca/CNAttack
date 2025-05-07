@@ -41,7 +41,7 @@ Before running the package ensure your adata object contains:
 
 * `adata.var` must contain the columns `"gene_name"`, `"chromosome"`, `"start"`, and `"end"`.
 
-* `adata.obs` must contain a `"cell_type"` column that identifies the cell type for each cell.
+* `adata.obs` must contain a clustering variable column such as `"cell_type"` that classifies each cell.
 
 
 Import the required packages.
@@ -63,10 +63,10 @@ from scipy.sparse import issparse
 
 
 ## Finding a Reference Cluster
-This function plots the average gene expression across genomic positions for each cell type. These plots will help you visually identify which cell type has the lowest overall expression across the genome, which will serve as the reference cluster in later steps.
+This function plots the average gene expression across genomic positions for each cell type. These plots will help you visually identify which cell type has the lowest overall expression across the genome, which will serve as the reference cluster in later steps. You can input the name of your clustering variable into `group_by`. Default for all `group_by` is `"cell_type"`
 
 ```
-plot_cluster_means_by_genomic_position(adata, layer="counts", downsample=100)
+plot_cluster_means_by_genomic_position(adata, layer="counts", group_by="cell_type", downsample=100)
 
 ```
 Based off these plots determine a cell type to set as the baseline. Reference cluster should have lowest overall gene expression across the entire genome.
@@ -75,12 +75,12 @@ Based off these plots determine a cell type to set as the baseline. Reference cl
 ## Gene Expression Smoothing
 After identifying the reference cluster, compute the smoothed expression profiles. Replace "reference_cluster" with the name of the cluster identified in the previous step. It returns the smoothed expression data, the average expression by cell type, the global average expression across all cells, and the average for the reference cluster.
 ```
-smoothed, celltype_avg, global_avg, cluster_avg = compute_smoothed_profiles_from_adata(adata, ref="reference_cluster")
+smoothed, celltype_avg, global_avg, cluster_avg = compute_smoothed_profiles_from_adata(adata, group_by="cell_type", ref="reference_cluster")
 ```
 
 Compute z-scores to measure deviations in expression for each cell relative to the smoothed reference profiles. It stores the resulting z-score matrices in adata.obsm, such as `adata.obsm["delta_global_z"]`.
 ```
-adata= compute_all_cell_zscores_to_adata_optimized(smoothed, celltype_avg, global_avg, cluster_avg, adata)
+adata= compute_all_cell_zscores_to_adata_optimized(smoothed, celltype_avg, global_avg, cluster_avg, adata, group_by="cell_type")
 ```
 
 Filter z-scores and count significant values. Will need to run function three times for each reference profile z score matrices.
@@ -132,14 +132,13 @@ adata, cnv_stats = format_detected_cnvs_with_cell_counts(
     adata,
     state_col='hmm_cnv_state',
     output_col='detected_cnvs',
+    group_by_col='cell_type'
     max_gap=500000,
     min_region_size=5000,
     z_threshold=1.5
 )
 
 
-print("\nCNV distribution across cells:")
-print(adata.obs['detected_cnvs'].value_counts().head())
 ```
 
 
