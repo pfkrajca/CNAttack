@@ -6,9 +6,9 @@ build-backend = "setuptools.build_meta"
 name = "group6-cscb"
 version = "0.0.1"
 authors = [
-  { name="Peyton Krajcarski", email="pkrajca1@jh.edu" },
+  { name="Peyton Krajcarski", email="pkrajca1@jh.edu" }, { name="Suhani Kabra", email="skabra3@jh.edu" }, { name="Chloe Liang", email="cliang25@jhu.edu" },
 ]
-description = "A novel approach for copy number alteration (CNA) detection using ___"
+description = "CNAttack - A CNA detection choose your own adventure!"
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [
@@ -19,5 +19,4 @@ license = "MIT"
 license-files = ["LICEN[CS]E*"]
 
 [project.urls]
-Homepage =
-Issues =
+Homepage = https://github.com/pfkrajca/CNAttack-repo
