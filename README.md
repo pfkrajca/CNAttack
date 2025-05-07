@@ -16,26 +16,44 @@ Choose your own expression average
 
 
 ## Installation
-1. Clone the respository:
-  git clone https://github.com/pfkrajca/CNAttack.git
-3. Navigate to the project directory:
-   cd CNAttack
-5. Install dependencies:
-   pip install -r requirements.txt
+1. **Clone the repository**:
+    ```bash
+    git clone https://github.com/pfkrajca/CNAttack.git
+    ```
 
-1. Import the package:
+2. **Navigate to the project directory**:
+    ```bash
+    cd CNAttack
+    ```
 
-   from CNAttack import filter_zscores
-   
-   from CNAttack import format_CNVs
-   
-   from CNAttack import hmm_for_CNAs
-   
-   from CNAttack import plot_cluster
-   
-   from CNAttack import smooth_profiles
-   
-   from CNAttack import zscores_compute
+3. **Create and activate a virtual environment** (optional but recommended):
+    ```bash
+    python3 -m venv cna_env
+    source cna_env/bin/activate  # On Windows use `cna_env\Scripts\activate`
+    ```
+
+4. **Install dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+5. **Import the package in your Python code**:
+    ```python
+    from CNAttack import filter_zscores
+    from CNAttack import format_CNVs
+    from CNAttack import hmm_for_CNAs
+    from CNAttack import plot_cluster
+    from CNAttack import smooth_profiles
+    from CNAttack import zscores_compute
+    ```
+
+6. **Usage Example** (optional):
+    ```python
+    # Example of using the functions
+    filtered_zscores = filter_zscores(data)
+    formatted_CNVs = format_CNVs(cnv_data)
+    # etc.
+    ```
 
 ## Setup & Usage
 
