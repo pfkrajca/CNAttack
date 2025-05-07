@@ -14,6 +14,14 @@ Choose your own expression average
 * Reference specific
 * Global
 
+General CNAttack Pipeline
+1. **Plotting**: Visualize gene expression across genomic positions
+2. **Smoothing**: Apply smoothing windows to expression profiles
+3. **Z-score calculation**: Compute expression deviations from expected values
+4. **Filtering**: Focus on significant expression changes
+5. **HMM detection**: Use Hidden Markov Models to identify CNV patterns
+6. **Annotation**: Format, merge, and annotate detected CNVs
+
 
 ## Installation
 1. **Clone the repository**:
@@ -163,4 +171,75 @@ adata, cnv_stats = format_detected_cnvs_with_cell_counts(
 ```
 ## Command Line Interface Example (example_CNAttack.py)
 
+## Quick Start
 
+The simplest way to run the complete workflow is using the example script:
+
+```bash
+python example_CNAttack.py input.h5ad --output results/my_analysis
+```
+
+This way, the same annData file will be use throughout the whole process to ensure clean detection of CNAs.
+
+## Required Data Format
+
+Your input file should be an AnnData object (.h5ad) with:
+- Gene expression data in the main matrix or specified layer, like 'counts'
+- Gene annotations in `adata.var` including:
+  - `chromosome`: Chromosome location (e.g., "1", "X", "chrX")
+  - `start`: Gene start position (integer)
+  - `end`: Gene end position (integer)
+- Cell annotations in `adata.obs` including:
+  - Cell type or grouping information (default: "cell_type" column)
+  - Other possible clustering parameters could include "time_point" or "condition"
+
+## Example Workflow
+
+```python
+# Complete workflow
+python cnattack_example.py input.h5ad --output results/full_analysis --plot
+
+# Run with custom parameters
+python cnattack_example.py input.h5ad \
+    --output results/custom_analysis \
+    --layer normalized \
+    --group_by leiden_clusters \
+    --window_size 50 \
+    --ref_group normal_cells \
+    --upper_thresh 1.5 \
+    --lower_thresh -1.5 \
+    --min_cells 300 \
+    --n_components 3 \
+    --z_threshold 1.8
+
+# Run specific steps only
+python cnattack_example.py input.h5ad \
+    --output results/partial \
+    --start_step 4 \
+    --end_step 6
+```
+
+## Individual Modules
+
+Each step can also be run individually using the module-specific scripts:
+
+```bash
+#Plot expression by genomic position
+python -m CNAttack.plot_cluster input.h5ad --layer counts --group_by cell_type --downsample 100
+
+#Format CNVs from an h5ad with HMM states
+python -m CNAttack.format_CNVs hmm_results.h5ad --output_col detected_cnvs
+```
+
+## Output Files
+
+The workflow generates several files with the specified prefix:
+
+- `*_smoothed.h5ad`: AnnData with smoothed expression profiles
+- `*_zscores.h5ad`: AnnData with computed z-scores
+- `*_filtered.h5ad`: AnnData with filtered significant genes
+- `*_hmm.h5ad`: AnnData with HMM state assignments
+- `*_cnvs.h5ad`: Final AnnData with CNV annotations
+- `*_cnv_regions.csv`: Table of detected CNV regions with statistics
+
+In Google Colab, it is easier to understand the processing of your data than in the command line, the integration of file generation for the command line specific example ensures the user can check their work. This is critically important as our package is a choose your own adventure!
