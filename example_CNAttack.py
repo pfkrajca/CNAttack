@@ -7,7 +7,6 @@ This example script demonstrates the full CNAttack workflow.
 Usage:
     python example_CNAttack.py input.h5ad --output output_prefix [options]
 
-Author: Peyton Krajcarski
 """
 pip install -r requirements.txt
 
